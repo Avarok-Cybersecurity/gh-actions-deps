@@ -37,14 +37,3 @@ runs:
     - uses: Swatinem/rust-cache@v1
       with:
         cache-on-failure: true
-  post:
-    - uses: actions/github-script@v2
-      if: failure()
-      with:
-        script: |
-          const { owner, repo } = context.repo
-          console.log('Cancelling ...');
-          const run_id = "${{ github.run_id }}";
-          await github.actions.cancelWorkflowRun({ owner, repo, run_id });
-          return 'stop'
-        result-encoding: string
