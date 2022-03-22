@@ -1,0 +1,52 @@
+name: "Rust crypto-dev environment"
+description: "A GitHub Action that makes setting up crypto-related workflow environments easy"
+author: "Thomas Braun <thomas.braun@avarok.net>"
+
+inputs:
+  timeout:
+    description: "specifies the timeout for this action"
+    required: true
+    default: 60
+
+runs:
+  timeout-minutes: ${{ inputs.timeout }}
+  steps:
+    - name: Install LLVM and Clang
+      if: startsWith(runner.os, 'windows')
+      uses: KyleMayes/install-llvm-action@v1.5.1
+      with:
+        version: "13.0"
+        directory: ${{ runner.temp }}/llvm
+
+    - name: Set LIBCLANG_PATH
+      if: startsWith(runner.os, 'windows')
+      run: echo "LIBCLANG_PATH=$((gcm clang).source -replace "clang.exe")" >> $env:GITHUB_ENV
+
+    - name: Install OpenSSL
+      if: startsWith(runner.os, 'windows')
+      run: choco install openssl --limit-output
+
+    - name: Set OPENSSL_ROOT_DIR
+      if: startsWith(runner.os, 'windows')
+      run: echo "OPENSSL_ROOT_DIR=C:/Program Files/OpenSSL-Win64" >> $env:GITHUB_ENV
+
+    - name: Set OPENSSL_ROOT_DIR
+      if: startsWith(runner.os, 'macos')
+      run: echo "OPENSSL_ROOT_DIR=/usr/local/opt/openssl@1.1" >> $GITHUB_ENV
+
+    - uses: actions/checkout@v2
+    - uses: dtolnay/rust-toolchain@stable
+    - uses: Swatinem/rust-cache@v1
+      with:
+        cache-on-failure: true
+  post:
+    - uses: actions/github-script@v2
+      if: failure()
+      with:
+        script: |
+          const { owner, repo } = context.repo
+          console.log('Cancelling ...');
+          const run_id = "${{ github.run_id }}";
+          await github.actions.cancelWorkflowRun({ owner, repo, run_id });
+          return 'stop'
+        result-encoding: string
