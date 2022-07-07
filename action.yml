@@ -34,6 +34,6 @@ runs:
 
     - uses: actions/checkout@v2
     - uses: dtolnay/rust-toolchain@stable
-    - uses: Swatinem/rust-cache@v1
-      with:
-        cache-on-failure: true
+#    - uses: Swatinem/rust-cache@v1
+#      with:
+#        cache-on-failure: true
