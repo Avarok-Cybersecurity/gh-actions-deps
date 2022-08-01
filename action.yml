@@ -14,7 +14,7 @@ runs:
 
     - name: Setup windows environment
       if: startsWith(runner.os, 'windows')
-      shell: cmd
+      shell: pwsh
       run: |
         # Setup strong crypto
         Set-ItemProperty -Path "HKLM:\\SOFTWARE\\Wow6432Node\\Microsoft\\.NetFramework\\v4.0.30319" -Name 'SchUseStrongCrypto' -Value '1' -Type DWord
