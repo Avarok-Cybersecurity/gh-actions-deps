@@ -32,7 +32,6 @@ runs:
       run: echo "OPENSSL_ROOT_DIR=/usr/local/opt/openssl@1.1" >> $GITHUB_ENV
       shell: bash
 
-    - uses: taiki-e/install-action@nextest
     - uses: actions/checkout@v2
     - uses: dtolnay/rust-toolchain@stable
 
