@@ -12,15 +12,6 @@ runs:
         version: "13.0"
         directory: ${{ runner.temp }}/llvm
 
-    - name: Setup windows environment
-      if: startsWith(runner.os, 'windows')
-      shell: pwsh
-      run: |
-        # Setup strong crypto
-        Set-ItemProperty -Path "HKLM:\\SOFTWARE\\Wow6432Node\\Microsoft\\.NetFramework\\v4.0.30319" -Name 'SchUseStrongCrypto' -Value '1' -Type DWord
-        Set-ItemProperty -Path "HKLM:\\SOFTWARE\\Microsoft\\.NetFramework\\v4.0.30319" -Name "SchUseStrongCrypto" -Value '1' -Type DWord
-        Invoke-WebRequest -OutFile "test\\astyle.exe" "https://rded.nl/pqclean/AStyle.exe"
-
     - name: Set LIBCLANG_PATH
       if: startsWith(runner.os, 'windows')
       run: echo "LIBCLANG_PATH=$((gcm clang).source -replace "clang.exe")" >> $env:GITHUB_ENV
