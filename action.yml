@@ -34,4 +34,6 @@ runs:
 
     - uses: actions/checkout@v2
     - uses: dtolnay/rust-toolchain@stable
+    - name: Install cargo make
+      run: cargo install --force cargo-make
 
