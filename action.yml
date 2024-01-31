@@ -19,8 +19,10 @@ runs:
 
     - name: Install OpenSSL
       if: startsWith(runner.os, 'windows')
-      run: choco install openssl --limit-output
-      shell: cmd
+      shell: powershell
+      run: |
+        echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
+        vcpkg install openssl:x64-windows-static-md
 
     - name: Set OPENSSL_ROOT_DIR
       if: startsWith(runner.os, 'windows')
