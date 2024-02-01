@@ -19,12 +19,27 @@ runs:
 
     - name: Install OpenSSL
       if: startsWith(runner.os, 'windows')
-      run: choco install openssl --limit-output
-      shell: cmd
+      run: |
+        # Define the URL of the raw script file
+        $scriptUrl = "https://github.com/ilia-shipitsin/runner-images/blob/b0381c354e34a74b8a62cc07ffbcbddae01a0ca0/images/win/scripts/Installers/Install-OpenSSL.ps1"
+
+        # Specify the path to save the script locally
+        $localScriptPath = "C:\Install-OpenSSL.ps1"
+
+        # Download the script from the server
+        Invoke-WebRequest -Uri $scriptUrl -OutFile $localScriptPath
+
+        # Execute the downloaded script
+        # You might need to change the execution policy temporarily if it's restricted
+        Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+
+        # Run the script
+        & $localScriptPath
+      shell: powershell
 
     - name: Set OPENSSL_ROOT_DIR
       if: startsWith(runner.os, 'windows')
-      run: echo "OPENSSL_ROOT_DIR=C:/Program Files/OpenSSL-Win64" >> $env:GITHUB_ENV
+      run: echo "OPENSSL_ROOT_DIR=C:/Program Files/OpenSSL" >> $env:GITHUB_ENV
       shell: cmd
 
     - name: Set OPENSSL_ROOT_DIR
